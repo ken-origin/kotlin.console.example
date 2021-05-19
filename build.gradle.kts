@@ -14,6 +14,7 @@ repositories {
 }
 
 dependencies {
+    implementation("org.apache.logging.log4j:log4j-spring-boot:2.14.1")
     testImplementation(kotlin("test-junit"))
 }
 
