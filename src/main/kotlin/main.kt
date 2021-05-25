@@ -33,6 +33,5 @@ fun main(args: Array<String>) {
         else -> println("その他例外です")
     }
 
-
     println("Hello World!")
 }
