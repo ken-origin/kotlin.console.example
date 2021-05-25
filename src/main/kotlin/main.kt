@@ -1,3 +1,4 @@
+
 fun main(args: Array<String>) {
     // Listの初期化
     val list: List<Int> = listOf(1, 2, 3)
@@ -20,6 +21,18 @@ fun main(args: Array<String>) {
     listToMap.forEach { (t, u) -> println("listからMap変換 t:${t} u:${u}") }
     // 表示２
     mapToMap.forEach { (t, u) -> println("MapからMap変換 t:${t} u:${u}") }
+
+    val ex: Throwable = if (args == null) {
+        NullPointerException()
+    } else {
+        NumberFormatException()
+    }
+
+    when(ex) {
+        is Exception -> println("ぬるぽです")
+        else -> println("その他例外です")
+    }
+
 
     println("Hello World!")
 }
