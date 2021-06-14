@@ -73,13 +73,14 @@ fun convert(): List<ConvertUser> {
     val cnvUsers2 = users.groupBy {
         "${it.userId}/${it.age}"
     }.map {
-        val entrySet = it
+        val userList = it.value
+        val firstUser = userList.first()
         ConvertUser(
-            entrySet.value.first().userId,
-            entrySet.value.first().age,
-            entrySet.value.map { user -> user.item },
-            entrySet.value.first().type?.let {
-                entrySet.value.map { user -> TestType.valuesOfOrNull(user.type) }
+            firstUser.userId,
+            firstUser.age,
+            userList.map { user -> user.item },
+            firstUser.type?.let {
+                userList.map { user -> TestType.valuesOfOrNull(user.type) }
             }
         )
     }
