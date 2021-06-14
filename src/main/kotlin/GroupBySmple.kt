@@ -1,10 +1,27 @@
+enum class TestType(
+    val value: String,
+    val description: String,
+    val order: Int
+) {
+    TYPE_A("a", "タイプ１", 1),
+    TYPE_B("b", "タイプ２", 2),
+    TYPE_C("c", "タイプ３", 3),
+    TYPE_D("d", "タイプ４", 4),
+    TYPE_E("e", "タイプ５", 5);
+
+    companion object {
+        fun valuesOfOrNull(value: String?): TestType? = values().find { it.value == value }
+    }
+}
+
 /**
  * ユーザー情報
  */
 data class User(
     val userId: String,
     val age: Int,
-    val item: String
+    val item: String,
+    val type: String?
 )
 
 /**
@@ -13,49 +30,61 @@ data class User(
 data class ConvertUser(
     val userId: String,
     val age: Int,
-    val items: List<String>
+    val items: List<String>,
+    val types: List<TestType?>?
 )
 
 /**
  * 縦持ちのユーザー情報を横持ちに変換
  */
-fun convert(): List<ConvertUser>? {
+fun convert(): List<ConvertUser> {
 
     val users = listOf(
-        User("1", 10,"アイテム１"),
-        User("1", 10,"アイテム２"),
-        User("1", 10,"アイテム３"),
-        User("2", 15,"アイテム５"),
-        User("2", 15,"アイテム６")
+        User("1", 10,"アイテム１","b"),
+        User("1", 10,"アイテム２","a"),
+        User("1", 10,"アイテム３","c"),
+        User("2", 15,"アイテム５","e"),
+        User("2", 15,"アイテム６","d"),
+        User("3", 20,"アイテム７",null)
+    ).sortedWith(
+        compareBy<User> {
+            it.userId
+        }.thenBy {
+            it.age
+        }.thenBy {
+            TestType.valuesOfOrNull(it.type)?.order
+        }
     )
 
     // 縦持ちを横持ちに変換
-    val cnvUsers = users.groupBy(
-        keySelector = { "${it.userId}/${it.age}" },
-        valueTransform = { it.item }
-    ).map {
-        ConvertUser(
-            it.key.split("/")[0],
-            it.key.split("/")[1].toInt(),
-            it.value
-        )
-    }
+//    val cnvUsers = users.groupBy(
+//        keySelector = { "${it.userId}/${it.age}" },
+//        valueTransform = { it.item }
+//    ).map {
+//        ConvertUser(
+//            it.key.split("/")[0],
+//            it.key.split("/")[1].toInt(),
+//            it.value,
+//        )
+//    }
 
-    println(cnvUsers)
+//    println(cnvUsers)
 
     val cnvUsers2 = users.groupBy {
         "${it.userId}/${it.age}"
     }.map {
+        val entrySet = it
         ConvertUser(
-            it.value.first().userId,
-            it.value.first().age,
-            it.value.map {
-                user -> user.item
+            entrySet.value.first().userId,
+            entrySet.value.first().age,
+            entrySet.value.map { user -> user.item },
+            entrySet.value.first().type?.let {
+                entrySet.value.map { user -> TestType.valuesOfOrNull(user.type) }
             }
         )
     }
 
     println(cnvUsers2)
 
-    return cnvUsers
+    return cnvUsers2
 }
