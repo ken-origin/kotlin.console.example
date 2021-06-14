@@ -47,8 +47,8 @@ fun convert(): List<ConvertUser>? {
         "${it.userId}/${it.age}"
     }.map {
         ConvertUser(
-            it.key.split("/")[0],
-            it.key.split("/")[1].toInt(),
+            it.value.first().userId,
+            it.value.first().age,
             it.value.map {
                 user -> user.item
             }
